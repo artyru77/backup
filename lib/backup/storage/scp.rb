@@ -8,7 +8,7 @@ module Backup
 
       ##
       # Server credentials
-      attr_accessor :username, :password, :ssh_options
+      attr_accessor :username, :password, :ssh_options, :scp_options
 
       ##
       # Server IP Address and SCP port
@@ -20,6 +20,7 @@ module Backup
         @port ||= 22
         @path ||= "backups"
         @ssh_options ||= {}
+        @scp_options ||= {}
         path.sub!(/^~\//, "")
       end
 
@@ -39,7 +40,7 @@ module Backup
             src = File.join(Config.tmp_path, filename)
             dest = File.join(remote_path, filename)
             Logger.info "Storing '#{ip}:#{dest}'..."
-            ssh.scp.upload!(src, dest)
+            ssh.scp.upload!(src, dest, options = scp_options)
           end
         end
       end
